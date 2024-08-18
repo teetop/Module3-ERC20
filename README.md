@@ -5,24 +5,25 @@ This Solidity program is a simple ERC-20 smart contract that allows the owner to
 
 ## Description
 
-This program is a simple contract written in Solidity, a programming language for developing smart contracts on the Ethereum blockchain. The smart contract imported the Openzeppelin ERC-20  and Ownable smart contract
+This program is a simple contract written in Solidity, a programming language for developing smart contracts on the Ethereum blockchain. The smart contract inherited the Openzeppelin ERC-20 and Ownable smart contract
 
 ``` javascript
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 ```
 
-and from the ERC-20 contract implemented the ```transfer```, ```mintToken``` and the ```burnToken``` functions.
+and from the ERC-20 contract I implemented the ```mint, transfer, balanceOf, burnToken``` functions.
 
-- mintToken: allows only the owner of the contract to be able to mint tokens for users.
-- transfer: allows a user to transfer their tokens to another user
-- burnToken: allows user to check burn their no-longer-needed tokens and that will be removed from the total supply of the token in circulation.
+- ```mintToken```: allows only the owner of the contract to mint tokens for users.
+- ```transfer```: allows a user to transfer their tokens to another user
+- ```burnToken```: allows users to check their no-longer-needed tokens, which will be removed from the total supply of the token in circulation.
+- ```balanceOf```: allows for the balance of a user whose address is supplied to checked.
 
-## Getting Started
+# Getting Started
 
-### Executing program
+## Executing program
 
-To run this program, you can use Remix, an online Solidity IDE. To get started, go to the Remix website at https://remix.ethereum.org/.
+You can use Remix, an online Solidity IDE to run this program. To get started, go to the Remix website at https://remix.ethereum.org/.
 
 Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g., MyERC20.sol). Copy and paste the following code into the file:
 
@@ -30,8 +31,9 @@ Once you are on the Remix website, create a new file by clicking on the "+" icon
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MyERC20 is ERC20, Ownable {
 
@@ -41,22 +43,21 @@ contract MyERC20 is ERC20, Ownable {
         Ownable(msg.sender)
     {}
 
-    function transfer(address to, uint256 value)
-        public
-        override
-        returns (bool)
-    {
-        address owner = _msgSender();
-        _transfer(owner, to, value);
-        return true;
+    function mintToken(address account, uint256 amount) public onlyOwner {
+        super._mint(account, amount);
+    }
+    
+    function balanceOf(address account) public view override  returns (uint256) {
+        return super.balanceOf(account);
     }
 
-    function mintToken(address account, uint256 amount) public onlyOwner {
-        _mint(account, amount);
+
+    function transfer(address to, uint256 value)public override returns (bool) {
+        return  super.transfer(to, value);
     }
 
     function burnToken(uint96 amount) external {
-        _burn(msg.sender, amount);
+        super._burn(msg.sender, amount);
     }
 }
 ```
@@ -67,11 +68,11 @@ Once the code is compiled, you can deploy the contract by clicking on the "Deplo
 
 Once the contract is deployed, you can interact with it the contract.
 
-## Authors
+# Authors
 
 Temitope Taiwo
 
-## License
+# License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details
 
